@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{TOPIC_NAME}} — AutoWiki</title>
+    <style>
+        /* ========== RESET & BASE ========== */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+            line-height: 1.6;
+            color: #1a1a2e;
+            background: #f0f2f5;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* ========== SIDEBAR ========== */
+        .sidebar {
+            position: fixed;
+            top: 0; left: 0;
+            width: 260px;
+            height: 100vh;
+            background: linear-gradient(180deg, #0f0c29, #302b63, #24243e);
+            color: #fff;
+            padding: 2rem 1.5rem;
+            overflow-y: auto;
+            z-index: 100;
+            transition: transform 0.3s ease;
+        }
+        .sidebar .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+        }
+        .sidebar .logo img {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+        }
+        .sidebar .logo h2 {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+        .sidebar nav a {
+            display: block;
+            color: rgba(255,255,255,0.75);
+            text-decoration: none;
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 4px;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+        .sidebar nav a:hover,
+        .sidebar nav a.active {
+            background: rgba(255,255,255,0.12);
+            color: #fff;
+        }
+        .sidebar nav a::before {
+            content: attr(data-icon);
+            margin-right: 10px;
+        }
+
+        /* ========== MAIN CONTENT ========== */
+        .content {
+            margin-left: 260px;
+            flex: 1;
+            padding: 2rem 3rem;
+            max-width: 1100px;
+        }
+
+        /* ========== HERO ========== */
+        .hero {
+            background: linear-gradient(135deg, {{PRIMARY_COLOR}}, {{SECONDARY_COLOR}});
+            border-radius: 16px;
+            padding: 3rem;
+            color: #fff;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 400px;
+            height: 400px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 50%;
+        }
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+        .hero p { font-size: 1.1rem; opacity: 0.9; max-width: 600px; }
+        .hero .badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-top: 1rem;
+        }
+
+        /* ========== SECTIONS ========== */
+        .section {
+            background: #fff;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+        .section h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #1a1a2e;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .section h2 .icon { font-size: 1.3rem; }
+
+        /* ========== TABLES ========== */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        th {
+            background: #f8f9fb;
+            text-align: left;
+            padding: 12px 16px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #666;
+            border-bottom: 2px solid #e8e8e8;
+        }
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #f0f0f0;
+            vertical-align: middle;
+        }
+        td img {
+            height: 24px;
+            width: 24px;
+            vertical-align: middle;
+            margin-right: 8px;
+            border-radius: 4px;
+        }
+        tr:hover td { background: #fafbfc; }
+        td a {
+            color: {{PRIMARY_COLOR}};
+            text-decoration: none;
+            font-weight: 500;
+        }
+        td a:hover { text-decoration: underline; }
+
+        /* ========== LISTS ========== */
+        .section ul, .section ol {
+            padding-left: 1.5rem;
+            margin-top: 0.5rem;
+        }
+        .section li {
+            margin-bottom: 0.5rem;
+            line-height: 1.7;
+        }
+        .section li a {
+            color: {{PRIMARY_COLOR}};
+            text-decoration: none;
+        }
+        .section li a:hover { text-decoration: underline; }
+
+        /* ========== CODE BLOCKS ========== */
+        pre {
+            background: #1e1e2e;
+            color: #cdd6f4;
+            padding: 1.2rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+        }
+        code {
+            background: #f0f2f5;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        pre code { background: none; padding: 0; }
+
+        /* ========== CARDS GRID ========== */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .card {
+            border: 1px solid #e8e8e8;
+            border-radius: 10px;
+            padding: 1.5rem;
+            transition: transform 0.2s;
+        }
+        .card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        .card h3 { font-size: 1rem; margin-bottom: 0.5rem; }
+        .card p { font-size: 0.9rem; color: #555; }
+
+        /* ========== RESOURCE LINKS ========== */
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .resource-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 1rem;
+            border: 1px solid #e8e8e8;
+            border-radius: 8px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s;
+        }
+        .resource-item:hover {
+            border-color: {{PRIMARY_COLOR}};
+            background: #fafbfc;
+        }
+        .resource-item .r-icon {
+            font-size: 1.5rem;
+            width: 40px;
+            text-align: center;
+        }
+        .resource-item .r-text h4 { font-size: 0.95rem; margin-bottom: 2px; }
+        .resource-item .r-text p { font-size: 0.8rem; color: #777; }
+
+        /* ========== FOOTER ========== */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #999;
+            font-size: 0.85rem;
+        }
+        footer a { color: {{PRIMARY_COLOR}}; text-decoration: none; }
+
+        /* ========== MOBILE ========== */
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 200;
+            background: #302b63;
+            color: #fff;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .content { margin-left: 0; padding: 1rem; }
+            .menu-toggle { display: block; }
+            .hero h1 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+<button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+    <div class="logo">
+        <img src="{{LOGO_URL}}" alt="{{TOPIC_NAME}}">
+        <h2>{{TOPIC_NAME}}</h2>
+    </div>
+    <nav>
+        <a href="#overview" data-icon="📖">Overview</a>
+        <a href="#features" data-icon="⚡">Key Features</a>
+        <a href="#architecture" data-icon="🏗️">Architecture</a>
+        <a href="#getting-started" data-icon="🚀">Getting Started</a>
+        <a href="#ecosystem" data-icon="🔗">Ecosystem</a>
+        <a href="#resources" data-icon="📚">Study Resources</a>
+    </nav>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="content">
+
+    <!-- HERO -->
+    <div class="hero">
+        <h1>{{TOPIC_NAME}}</h1>
+        <p>{{TOPIC_TAGLINE}}</p>
+        <span class="badge">{{TOPIC_CATEGORY}}</span>
+    </div>
+
+    <!-- OVERVIEW -->
+    <div class="section" id="overview">
+        <h2><span class="icon">📖</span> Overview</h2>
+        <p>{{OVERVIEW_TEXT}}</p>
+    </div>
+
+    <!-- KEY FEATURES -->
+    <div class="section" id="features">
+        <h2><span class="icon">⚡</span> Key Features</h2>
+        <table>
+            <tr>
+                <th>Feature</th>
+                <th>Description</th>
+                <th>Documentation</th>
+            </tr>
+            <!-- REPEAT FOR EACH FEATURE -->
+            <tr>
+                <td><strong>{{FEATURE_NAME}}</strong></td>
+                <td>{{FEATURE_DESC}}</td>
+                <td><a href="{{FEATURE_DOC_URL}}" target="_blank">Docs →</a></td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- ARCHITECTURE -->
+    <div class="section" id="architecture">
+        <h2><span class="icon">🏗️</span> How It Works</h2>
+        <p>{{ARCHITECTURE_TEXT}}</p>
+        <!-- Optional: Add diagram or step-by-step flow -->
+    </div>
+
+    <!-- GETTING STARTED -->
+    <div class="section" id="getting-started">
+        <h2><span class="icon">🚀</span> Getting Started</h2>
+        <ol>
+            <li>{{STEP_1}}</li>
+            <li>{{STEP_2}}</li>
+            <li>{{STEP_3}}</li>
+        </ol>
+        <pre><code>{{QUICK_START_COMMAND}}</code></pre>
+    </div>
+
+    <!-- ECOSYSTEM / RELATED TOOLS -->
+    <div class="section" id="ecosystem">
+        <h2><span class="icon">🔗</span> Related Tools & Ecosystem</h2>
+        <table>
+            <tr>
+                <th>Tool</th>
+                <th>Purpose</th>
+                <th>Documentation</th>
+            </tr>
+            <!-- REPEAT FOR EACH RELATED TOOL -->
+            <tr>
+                <td><img src="{{TOOL_LOGO}}" alt="{{TOOL_NAME}}"> {{TOOL_NAME}}</td>
+                <td>{{TOOL_PURPOSE}}</td>
+                <td><a href="{{TOOL_DOC_URL}}" target="_blank">Docs →</a></td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- STUDY RESOURCES -->
+    <div class="section" id="resources">
+        <h2><span class="icon">📚</span> Study Resources</h2>
+        <div class="resource-grid">
+            <a href="{{RESOURCE_URL}}" target="_blank" class="resource-item">
+                <div class="r-icon">📘</div>
+                <div class="r-text">
+                    <h4>Official Documentation</h4>
+                    <p>{{OFFICIAL_DOCS_DESC}}</p>
+                </div>
+            </a>
+            <a href="{{RESOURCE_URL}}" target="_blank" class="resource-item">
+                <div class="r-icon">🎓</div>
+                <div class="r-text">
+                    <h4>Free Tutorials</h4>
+                    <p>{{TUTORIALS_DESC}}</p>
+                </div>
+            </a>
+            <a href="{{RESOURCE_URL}}" target="_blank" class="resource-item">
+                <div class="r-icon">🎥</div>
+                <div class="r-text">
+                    <h4>Video Courses</h4>
+                    <p>{{VIDEO_DESC}}</p>
+                </div>
+            </a>
+            <a href="{{RESOURCE_URL}}" target="_blank" class="resource-item">
+                <div class="r-icon">💬</div>
+                <div class="r-text">
+                    <h4>Community</h4>
+                    <p>{{COMMUNITY_DESC}}</p>
+                </div>
+            </a>
+            <a href="{{RESOURCE_URL}}" target="_blank" class="resource-item">
+                <div class="r-icon">🏅</div>
+                <div class="r-text">
+                    <h4>Certifications</h4>
+                    <p>{{CERT_DESC}}</p>
+                </div>
+            </a>
+            <a href="{{RESOURCE_URL}}" target="_blank" class="resource-item">
+                <div class="r-icon">📰</div>
+                <div class="r-text">
+                    <h4>Blogs & Articles</h4>
+                    <p>{{BLOGS_DESC}}</p>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>Generated by <a href="#">AutoWiki AI</a> · {{TIMESTAMP}}</p>
+        <p>Built with ❤️ for the DevOps community</p>
+    </footer>
+
+</main>
+
+<script>
+    // Active nav highlighting on scroll
+    const sections = document.querySelectorAll('.section');
+    const navLinks = document.querySelectorAll('.sidebar nav a');
+    window.addEventListener('scroll', () => {
+        let current = '';
+        sections.forEach(section => {
+            const top = section.offsetTop - 100;
+            if (scrollY >= top) current = section.getAttribute('id');
+        });
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === '#' + current) link.classList.add('active');
+        });
+    });
+    // Close mobile sidebar on link click
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            document.querySelector('.sidebar').classList.remove('open');
+        });
+    });
+</script>
+
+</body>
+</html>
