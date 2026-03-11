@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>{{TOPIC_NAME}} Knowledge Portal</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<style>
+body {
+	font-family: 'Segoe UI', Arial, sans-serif;
+	margin: 0;
+	background: #f7f9fb;
+	color: #23395d;
+}
+header {
+	background: {{HEADER_BG_COLOR}};
+	color: #fff;
+	padding: 32px 0 24px 0;
+	font-size: 32px;
+	text-align: center;
+	letter-spacing: 1px;
+	box-shadow: 0 2px 8px rgba(26,42,78,0.08);
+}
+.container {
+	display: flex;
+}
+.sidebar {
+	width: 260px;
+	background: {{BRAND_COLOR}};
+	height: 100vh;
+	position: fixed;
+	overflow: auto;
+	box-shadow: 2px 0 8px rgba(26,42,78,0.05);
+}
+.sidebar a {
+	display: block;
+	color: #fff;
+	padding: 14px 24px;
+	text-decoration: none;
+	font-size: 17px;
+	border-left: 4px solid transparent;
+	transition: background 0.2s, border-left 0.2s;
+}
+.sidebar a:hover {
+	background: {{HEADER_BG_COLOR}};
+	border-left: 4px solid {{BRAND_LIGHT_COLOR}};
+}
+.content {
+	margin-left: 260px;
+	padding: 40px 32px;
+	width: calc(100% - 260px);
+}
+.section {
+	background: #fff;
+	padding: 32px 28px;
+	margin-bottom: 32px;
+	border-radius: 12px;
+	box-shadow: 0 2px 12px rgba(26,42,78,0.07);
+	position: relative;
+}
+h2 {
+	color: {{BRAND_COLOR}};
+	font-size: 26px;
+	margin-bottom: 12px;
+}
+h3 {
+	color: {{HEADER_BG_COLOR}};
+	font-size: 20px;
+	margin-top: 24px;
+}
+ul {
+	line-height: 1.8;
+}
+table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 20px;
+	background: #f7f9fb;
+	border-radius: 8px;
+	overflow: hidden;
+}
+th, td {
+	border: 1px solid #e3e7ed;
+	padding: 12px;
+}
+th {
+	background: {{BRAND_COLOR}};
+	color: #fff;
+	font-weight: 600;
+}
+.mermaid {
+	background: {{MERMAID_BG_COLOR}};
+	padding: 20px;
+	border-radius: 8px;
+	margin-bottom: 16px;
+}
+a {
+	color: {{LINK_COLOR}};
+	font-weight: 500;
+	text-decoration: underline;
+}
+.infobox {
+	background: {{INFOBOX_BG_COLOR}};
+	border-left: 6px solid {{BRAND_COLOR}};
+	padding: 16px 20px;
+	margin: 18px 0;
+	border-radius: 8px;
+	color: #23395d;
+	font-size: 16px;
+}
+.tooltip {
+	position: relative;
+	cursor: pointer;
+	border-bottom: 1px dotted {{BRAND_COLOR}};
+}
+.tooltip .tooltiptext {
+	visibility: hidden;
+	width: 220px;
+	background-color: {{HEADER_BG_COLOR}};
+	color: #fff;
+	text-align: left;
+	border-radius: 6px;
+	padding: 10px;
+	position: absolute;
+	z-index: 1;
+	bottom: 125%;
+	left: 50%;
+	margin-left: -110px;
+	opacity: 0;
+	transition: opacity 0.3s;
+	font-size: 15px;
+}
+.tooltip:hover .tooltiptext {
+	visibility: visible;
+	opacity: 1;
+}
+pre {
+	background: #1e1e2e;
+	color: #cdd6f4;
+	padding: 16px 20px;
+	border-radius: 8px;
+	overflow-x: auto;
+	font-size: 14px;
+	margin-top: 12px;
+}
+code { font-family: 'Courier New', monospace; }
+</style>
+</head>
+<body>
+
+<header>
+<img src="{{LOGO_URL}}" alt="{{TOPIC_NAME}}" style="height:40px;vertical-align:middle;border-radius:8px;margin-right:12px;">
+{{TOPIC_NAME}} – {{TAGLINE}}
+</header>
+
+<div class="container">
+
+<div class="sidebar">
+<a href="#overview">Overview</a>
+<a href="#definition">What is {{TOPIC_NAME}}</a>
+<a href="#why">Why {{TOPIC_NAME}}</a>
+<a href="#workflow">How It Works</a>
+<a href="#stages">Stages</a>
+<a href="#stage-detail">Stage Details</a>
+<a href="#architecture">Architecture</a>
+<a href="#tools">Integrated Tools</a>
+<a href="#getting-started">Getting Started</a>
+<a href="#editions">Editions</a>
+<a href="#resources">Study Resources</a>
+</div>
+
+<div class="content">
+
+<!-- 1. OVERVIEW -->
+<div class="section" id="overview">
+<h2>1. {{TOPIC_NAME}} Overview</h2>
+<div class="infobox">
+	<b>Real-World Analogy:</b> {{ANALOGY}}<br>
+	<span style="display:block;margin-top:8px;"><b>FAQ:</b> <span class="tooltip">{{FAQ_QUESTION}}<span class="tooltiptext">{{FAQ_ANSWER}}</span></span></span>
+</div>
+<ul>
+	<li>{{OVERVIEW_POINT_1}}</li>
+	<li>{{OVERVIEW_POINT_2}}</li>
+	<li>{{OVERVIEW_POINT_3}}</li>
+</ul>
+</div>
+
+<!-- 2. DEFINITION -->
+<div class="section" id="definition">
+<h2>2. What is {{TOPIC_NAME}}</h2>
+<ul>
+	<!-- Definition points -->
+</ul>
+</div>
+
+<!-- 3. WHY -->
+<div class="section" id="why">
+<h2>3. Why Use {{TOPIC_NAME}}</h2>
+<ul>
+	<!-- Problem points -->
+</ul>
+<h3>{{TOPIC_NAME}} solves these problems by</h3>
+<ul>
+	<!-- Solution points -->
+</ul>
+</div>
+
+<!-- 4. WORKFLOW -->
+<div class="section" id="workflow">
+<h2>4. How {{TOPIC_NAME}} Works</h2>
+<div class="mermaid">
+graph LR
+<!-- Mermaid flowchart -->
+</div>
+</div>
+
+<!-- 5. STAGES -->
+<div class="section" id="stages">
+<h2>5. {{TOPIC_NAME}} Stages</h2>
+<ul>
+	<li><b>Stage Name</b> <span class="tooltip">(Analogy)<span class="tooltiptext">Explanation</span></span></li>
+</ul>
+</div>
+
+<!-- 6. STAGE DETAIL -->
+<div class="section" id="stage-detail">
+<h2>6. Detailed Stage Explanation</h2>
+<!-- h3 + ul for each stage -->
+</div>
+
+<!-- 7. ARCHITECTURE -->
+<div class="section" id="architecture">
+<h2>7. {{TOPIC_NAME}} Architecture</h2>
+<div class="mermaid">
+graph TD
+<!-- Architecture diagram -->
+</div>
+<h3>Components</h3>
+<ul>
+	<!-- Component descriptions -->
+</ul>
+</div>
+
+<!-- 8. TOOLS -->
+<div class="section" id="tools">
+<h2>8. Tools That Integrate with {{TOPIC_NAME}}</h2>
+<table>
+	<tr>
+		<th>Tool</th>
+		<th>Purpose</th>
+		<th>Documentation</th>
+	</tr>
+	<tr>
+		<td><img src="{{TOOL_LOGO}}" alt="{{TOOL_NAME}}" style="height:24px;vertical-align:middle;"> {{TOOL_NAME}}</td>
+		<td>{{TOOL_PURPOSE}}</td>
+		<td><a href="{{TOOL_DOC_URL}}" target="_blank">Docs</a></td>
+	</tr>
+</table>
+</div>
+
+<!-- 9. GETTING STARTED -->
+<div class="section" id="getting-started">
+<h2>9. Getting Started with {{TOPIC_NAME}}</h2>
+<ul>
+	<!-- Steps -->
+</ul>
+<h3>Quick Start</h3>
+<pre><code><!-- Commands --></code></pre>
+</div>
+
+<!-- 10. EDITIONS -->
+<div class="section" id="editions">
+<h2>10. {{TOPIC_NAME}} Editions</h2>
+<table>
+	<tr>
+		<th>Edition</th>
+		<th>Key Features</th>
+		<th>Best For</th>
+	</tr>
+</table>
+</div>
+
+<!-- 11. RESOURCES -->
+<div class="section" id="resources">
+<h2>11. Study Resources</h2>
+<ul>
+	<li><a href="{{URL}}" target="_blank">{{RESOURCE_NAME}}</a> — {{DESCRIPTION}}</li>
+</ul>
+</div>
+
+</div>
+</div>
+
+<script>mermaid.initialize({startOnLoad:true, theme:'default'});</script>
+</body>
+</html>
