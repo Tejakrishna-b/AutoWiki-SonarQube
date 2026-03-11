@@ -1,458 +1,383 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SonarQube — AutoWiki</title>
-    <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        html { scroll-behavior: smooth; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
-            line-height: 1.6;
-            color: #1a1a2e;
-            background: #f0f2f5;
-            display: flex;
-            min-height: 100vh;
-        }
-
-        /* SIDEBAR */
-        .sidebar {
-            position: fixed;
-            top: 0; left: 0;
-            width: 260px;
-            height: 100vh;
-            background: linear-gradient(180deg, #0f0c29, #302b63, #24243e);
-            color: #fff;
-            padding: 2rem 1.5rem;
-            overflow-y: auto;
-            z-index: 100;
-            transition: transform 0.3s ease;
-        }
-        .sidebar .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 2rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 1px solid rgba(255,255,255,0.15);
-        }
-        .sidebar .logo img {
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
-        }
-        .sidebar .logo h2 {
-            font-size: 1.2rem;
-            font-weight: 700;
-        }
-        .sidebar nav a {
-            display: block;
-            color: rgba(255,255,255,0.75);
-            text-decoration: none;
-            padding: 0.6rem 1rem;
-            border-radius: 8px;
-            margin-bottom: 4px;
-            font-size: 0.9rem;
-            transition: all 0.2s ease;
-        }
-        .sidebar nav a:hover,
-        .sidebar nav a.active {
-            background: rgba(255,255,255,0.12);
-            color: #fff;
-        }
-        .sidebar nav a::before {
-            content: attr(data-icon);
-            margin-right: 10px;
-        }
-
-        /* MAIN CONTENT */
-        .content {
-            margin-left: 260px;
-            flex: 1;
-            padding: 2rem 3rem;
-            max-width: 1100px;
-        }
-
-        /* HERO */
-        .hero {
-            background: linear-gradient(135deg, #4E9BCD, #549DD0);
-            border-radius: 16px;
-            padding: 3rem;
-            color: #fff;
-            margin-bottom: 2rem;
-            position: relative;
-            overflow: hidden;
-        }
-        .hero::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -20%;
-            width: 400px;
-            height: 400px;
-            background: rgba(255,255,255,0.08);
-            border-radius: 50%;
-        }
-        .hero h1 {
-            font-size: 2.5rem;
-            font-weight: 800;
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-        .hero h1 img {
-            width: 50px;
-            height: 50px;
-            border-radius: 10px;
-        }
-        .hero p { font-size: 1.1rem; opacity: 0.9; max-width: 600px; }
-        .hero .badge {
-            display: inline-block;
-            background: rgba(255,255,255,0.2);
-            padding: 4px 14px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            margin-top: 1rem;
-        }
-
-        /* SECTIONS */
-        .section {
-            background: #fff;
-            border-radius: 12px;
-            padding: 2rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-        }
-        .section h2 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            color: #1a1a2e;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .section h2 .icon { font-size: 1.3rem; }
-
-        /* TABLES */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
-        }
-        th {
-            background: #f8f9fb;
-            text-align: left;
-            padding: 12px 16px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: #666;
-            border-bottom: 2px solid #e8e8e8;
-        }
-        td {
-            padding: 12px 16px;
-            border-bottom: 1px solid #f0f0f0;
-            vertical-align: middle;
-        }
-        td img {
-            height: 24px;
-            width: 24px;
-            vertical-align: middle;
-            margin-right: 8px;
-            border-radius: 4px;
-        }
-        tr:hover td { background: #fafbfc; }
-        td a {
-            color: #4E9BCD;
-            text-decoration: none;
-            font-weight: 500;
-        }
-        td a:hover { text-decoration: underline; }
-
-        /* LISTS */
-        .section ul, .section ol {
-            padding-left: 1.5rem;
-            margin-top: 0.5rem;
-        }
-        .section li {
-            margin-bottom: 0.5rem;
-            line-height: 1.7;
-        }
-        .section li a {
-            color: #4E9BCD;
-            text-decoration: none;
-        }
-        .section li a:hover { text-decoration: underline; }
-
-        /* CODE BLOCKS */
-        pre {
-            background: #1e1e2e;
-            color: #cdd6f4;
-            padding: 1.2rem;
-            border-radius: 8px;
-            overflow-x: auto;
-            font-size: 0.9rem;
-            margin-top: 1rem;
-        }
-        code {
-            background: #f0f2f5;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 0.9em;
-        }
-        pre code { background: none; padding: 0; }
-
-        /* ARCHITECTURE FLOW */
-        .arch-flow {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0;
-            margin: 1.5rem 0;
-            flex-wrap: wrap;
-        }
-        .arch-step {
-            background: #f0f6fc;
-            border: 2px solid #4E9BCD;
-            border-radius: 12px;
-            padding: 1rem 1.5rem;
-            text-align: center;
-            min-width: 140px;
-        }
-        .arch-step .step-icon { font-size: 1.8rem; margin-bottom: 0.3rem; }
-        .arch-step h4 { font-size: 0.9rem; color: #4E9BCD; }
-        .arch-step p { font-size: 0.75rem; color: #666; }
-        .arch-arrow {
-            font-size: 1.5rem;
-            color: #4E9BCD;
-            padding: 0 8px;
-        }
-
-        /* RESOURCE GRID */
-        .resource-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-        .resource-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 1rem;
-            border: 1px solid #e8e8e8;
-            border-radius: 8px;
-            text-decoration: none;
-            color: inherit;
-            transition: all 0.2s;
-        }
-        .resource-item:hover {
-            border-color: #4E9BCD;
-            background: #fafbfc;
-        }
-        .resource-item .r-icon {
-            font-size: 1.5rem;
-            width: 40px;
-            text-align: center;
-        }
-        .resource-item .r-text h4 { font-size: 0.95rem; margin-bottom: 2px; }
-        .resource-item .r-text p { font-size: 0.8rem; color: #777; }
-
-        /* FOOTER */
-        footer {
-            text-align: center;
-            padding: 2rem;
-            color: #999;
-            font-size: 0.85rem;
-        }
-        footer a { color: #4E9BCD; text-decoration: none; }
-
-        /* MOBILE */
-        .menu-toggle {
-            display: none;
-            position: fixed;
-            top: 1rem;
-            left: 1rem;
-            z-index: 200;
-            background: #302b63;
-            color: #fff;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 1.2rem;
-            cursor: pointer;
-        }
-        @media (max-width: 768px) {
-            .sidebar { transform: translateX(-100%); }
-            .sidebar.open { transform: translateX(0); }
-            .content { margin-left: 0; padding: 1rem; }
-            .menu-toggle { display: block; }
-            .hero h1 { font-size: 1.8rem; }
-            .arch-flow { flex-direction: column; }
-            .arch-arrow { transform: rotate(90deg); }
-        }
-    </style>
+<meta charset="UTF-8">
+<title>SonarQube Knowledge Portal</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<style>
+body {
+	font-family: 'Segoe UI', Arial, sans-serif;
+	margin: 0;
+	background: #f7f9fb;
+	color: #23395d;
+}
+header {
+	background: #1a2a4e;
+	color: #fff;
+	padding: 32px 0 24px 0;
+	font-size: 32px;
+	text-align: center;
+	letter-spacing: 1px;
+	box-shadow: 0 2px 8px rgba(26,42,78,0.08);
+}
+.container {
+	display: flex;
+}
+.sidebar {
+	width: 260px;
+	background: #4E9BCD;
+	height: 100vh;
+	position: fixed;
+	overflow: auto;
+	box-shadow: 2px 0 8px rgba(26,42,78,0.05);
+}
+.sidebar a {
+	display: block;
+	color: #fff;
+	padding: 14px 24px;
+	text-decoration: none;
+	font-size: 17px;
+	border-left: 4px solid transparent;
+	transition: background 0.2s, border-left 0.2s;
+}
+.sidebar a:hover {
+	background: #1a2a4e;
+	border-left: 4px solid #69b8e5;
+}
+.content {
+	margin-left: 260px;
+	padding: 40px 32px;
+	width: calc(100% - 260px);
+}
+.section {
+	background: #fff;
+	padding: 32px 28px;
+	margin-bottom: 32px;
+	border-radius: 12px;
+	box-shadow: 0 2px 12px rgba(26,42,78,0.07);
+	position: relative;
+}
+h2 {
+	color: #4E9BCD;
+	font-size: 26px;
+	margin-bottom: 12px;
+}
+h3 {
+	color: #1a2a4e;
+	font-size: 20px;
+	margin-top: 24px;
+}
+ul {
+	line-height: 1.8;
+}
+table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 20px;
+	background: #f7f9fb;
+	border-radius: 8px;
+	overflow: hidden;
+}
+th, td {
+	border: 1px solid #e3e7ed;
+	padding: 12px;
+}
+th {
+	background: #4E9BCD;
+	color: #fff;
+	font-weight: 600;
+}
+.mermaid {
+	background: #eaf2f9;
+	padding: 20px;
+	border-radius: 8px;
+	margin-bottom: 16px;
+}
+a {
+	color: #2b6fa0;
+	font-weight: 500;
+	text-decoration: underline;
+}
+.infobox {
+	background: #eaf2f9;
+	border-left: 6px solid #4E9BCD;
+	padding: 16px 20px;
+	margin: 18px 0;
+	border-radius: 8px;
+	color: #23395d;
+	font-size: 16px;
+}
+.tooltip {
+	position: relative;
+	cursor: pointer;
+	border-bottom: 1px dotted #4E9BCD;
+}
+.tooltip .tooltiptext {
+	visibility: hidden;
+	width: 220px;
+	background-color: #1a2a4e;
+	color: #fff;
+	text-align: left;
+	border-radius: 6px;
+	padding: 10px;
+	position: absolute;
+	z-index: 1;
+	bottom: 125%;
+	left: 50%;
+	margin-left: -110px;
+	opacity: 0;
+	transition: opacity 0.3s;
+	font-size: 15px;
+}
+.tooltip:hover .tooltiptext {
+	visibility: visible;
+	opacity: 1;
+}
+pre {
+	background: #1e1e2e;
+	color: #cdd6f4;
+	padding: 16px 20px;
+	border-radius: 8px;
+	overflow-x: auto;
+	font-size: 14px;
+	margin-top: 12px;
+}
+code { font-family: 'Courier New', monospace; }
+</style>
 </head>
 <body>
 
-<button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">&#9776;</button>
+<header>
+<img src="https://avatars.githubusercontent.com/u/545988" alt="SonarQube" style="height:40px;vertical-align:middle;border-radius:8px;margin-right:12px;">
+SonarQube – Continuous Code Quality &amp; Security Platform
+</header>
 
-<!-- SIDEBAR -->
-<aside class="sidebar">
-    <div class="logo">
-        <img src="https://avatars.githubusercontent.com/u/545988" alt="SonarQube">
-        <h2>SonarQube</h2>
-    </div>
-    <nav>
-        <a href="#overview" data-icon="&#128214;">Overview</a>
-        <a href="#features" data-icon="&#9889;">Key Features</a>
-        <a href="#architecture" data-icon="&#127959;">Architecture</a>
-        <a href="#getting-started" data-icon="&#128640;">Getting Started</a>
-        <a href="#ecosystem" data-icon="&#128279;">Ecosystem</a>
-        <a href="#resources" data-icon="&#128218;">Study Resources</a>
-    </nav>
-</aside>
+<div class="container">
 
-<!-- MAIN CONTENT -->
-<main class="content">
+<div class="sidebar">
+<a href="#overview">Overview</a>
+<a href="#definition">What is SonarQube</a>
+<a href="#why">Why SonarQube</a>
+<a href="#workflow">How It Works</a>
+<a href="#stages">Analysis Stages</a>
+<a href="#stage-detail">Stage Details</a>
+<a href="#architecture">Architecture</a>
+<a href="#tools">Integrated Tools</a>
+<a href="#getting-started">Getting Started</a>
+<a href="#editions">Editions</a>
+<a href="#resources">Study Resources</a>
+</div>
 
-    <!-- HERO -->
-    <div class="hero">
-        <h1>
-            <img src="https://avatars.githubusercontent.com/u/545988" alt="SonarQube">
-            SonarQube
-        </h1>
-        <p>Continuous code quality and security inspection platform that detects bugs, vulnerabilities, and code smells across 30+ programming languages.</p>
-        <span class="badge">Code Quality &amp; Security</span>
-    </div>
+<div class="content">
 
-    <!-- OVERVIEW -->
-    <div class="section" id="overview">
-        <h2><span class="icon">&#128214;</span> Overview</h2>
-        <p>SonarQube is an open-source platform developed by <strong>SonarSource</strong> for continuous inspection of code quality. It performs automatic reviews with static analysis of code to detect bugs, code smells, and security vulnerabilities across 30+ programming languages including Java, C#, JavaScript, TypeScript, Python, Go, and more.</p>
-        <br>
-        <p>SonarQube integrates into CI/CD pipelines and provides developers with actionable feedback on every commit. It enforces <strong>Quality Gates</strong> — a set of threshold conditions that code must meet before it can be released — ensuring that only clean, secure code reaches production.</p>
-        <br>
-        <p><strong>Why it matters:</strong> Poor code quality leads to technical debt, security breaches, and costly production failures. SonarQube catches these issues early in the development lifecycle, reducing remediation costs by up to 10x compared to fixing issues in production.</p>
-    </div>
+<!-- OVERVIEW -->
+<div class="section" id="overview">
+<h2>1. SonarQube Overview</h2>
+<div class="infobox">
+	<b>Real-World Analogy:</b> Think of SonarQube as a master building inspector. Before any building (code) is approved for occupancy (production), the inspector checks for structural weaknesses (bugs), safety hazards (vulnerabilities), and code violations (code smells). No shortcuts allowed!<br>
+	<span style="display:block;margin-top:8px;"><b>FAQ:</b> <span class="tooltip">What happens if my code fails the Quality Gate?<span class="tooltiptext">SonarQube blocks the merge/release and provides detailed reports showing exactly which issues need fixing.</span></span></span>
+</div>
+<ul>
+	<li>SonarQube is an open-source platform by <b>SonarSource</b> for continuous code quality inspection.</li>
+	<li>It performs static analysis to detect bugs, code smells, and security vulnerabilities.</li>
+	<li>Supports <b>30+ programming languages</b> including Java, Python, JavaScript, TypeScript, C#, Go, and more.</li>
+	<li>Integrates into CI/CD pipelines for automated code reviews on every commit.</li>
+	<li><span class="tooltip">Why is this important?<span class="tooltiptext">Fixing bugs in production costs 10x more than catching them during development. SonarQube catches issues early.</span></span></li>
+</ul>
+</div>
 
-    <!-- KEY FEATURES -->
-    <div class="section" id="features">
-        <h2><span class="icon">&#9889;</span> Key Features</h2>
-        <table>
-            <tr>
-                <th>Feature</th>
-                <th>Description</th>
-                <th>Documentation</th>
-            </tr>
-            <tr>
-                <td><strong>Static Code Analysis</strong></td>
-                <td>Detects bugs, vulnerabilities, and code smells using 5,000+ rules across 30+ languages</td>
-                <td><a href="https://docs.sonarsource.com/sonarqube/latest/analyzing-source-code/overview/" target="_blank">Docs &rarr;</a></td>
-            </tr>
-            <tr>
-                <td><strong>Quality Gates</strong></td>
-                <td>Enforce pass/fail criteria on code metrics before merging or releasing</td>
-                <td><a href="https://docs.sonarsource.com/sonarqube/latest/user-guide/quality-gates/" target="_blank">Docs &rarr;</a></td>
-            </tr>
-            <tr>
-                <td><strong>Security Hotspots</strong></td>
-                <td>Highlights security-sensitive code that needs manual review</td>
-                <td><a href="https://docs.sonarsource.com/sonarqube/latest/user-guide/security-hotspots/" target="_blank">Docs &rarr;</a></td>
-            </tr>
-            <tr>
-                <td><strong>Quality Profiles</strong></td>
-                <td>Customizable rulesets per language, inheritable across projects</td>
-                <td><a href="https://docs.sonarsource.com/sonarqube/latest/instance-administration/quality-profiles/" target="_blank">Docs &rarr;</a></td>
-            </tr>
-            <tr>
-                <td><strong>Branch Analysis</strong></td>
-                <td>Analyze feature branches and pull requests independently</td>
-                <td><a href="https://docs.sonarsource.com/sonarqube/latest/analyzing-source-code/branch-analysis/" target="_blank">Docs &rarr;</a></td>
-            </tr>
-            <tr>
-                <td><strong>Clean as You Code</strong></td>
-                <td>Focus on keeping new code clean rather than fixing legacy issues</td>
-                <td><a href="https://docs.sonarsource.com/sonarqube/latest/user-guide/clean-as-you-code/" target="_blank">Docs &rarr;</a></td>
-            </tr>
-            <tr>
-                <td><strong>CI/CD Integration</strong></td>
-                <td>Native integrations with Jenkins, GitHub Actions, GitLab CI, Azure DevOps, Bitbucket</td>
-                <td><a href="https://docs.sonarsource.com/sonarqube/latest/devops-platform-integration/github-integration/" target="_blank">Docs &rarr;</a></td>
-            </tr>
-            <tr>
-                <td><strong>OWASP / CWE Reporting</strong></td>
-                <td>Map vulnerabilities to OWASP Top 10 and CWE standards for compliance</td>
-                <td><a href="https://docs.sonarsource.com/sonarqube/latest/user-guide/security-reports/" target="_blank">Docs &rarr;</a></td>
-            </tr>
-        </table>
-    </div>
+<!-- DEFINITION -->
+<div class="section" id="definition">
+<h2>2. What is SonarQube</h2>
+<ul>
+	<li>SonarQube is a <b>static code analysis</b> platform that inspects source code without executing it.</li>
+	<li>It applies <b>5,000+ coding rules</b> to detect issues across three categories:</li>
+	<li><b>Bugs</b> — Code that is demonstrably wrong or will cause unexpected behavior.</li>
+	<li><b>Vulnerabilities</b> — Security weaknesses that could be exploited (mapped to OWASP Top 10 &amp; CWE).</li>
+	<li><b>Code Smells</b> — Maintainability issues that increase technical debt.</li>
+	<li>It enforces <b>Quality Gates</b> — threshold conditions that code must pass before release.</li>
+</ul>
+</div>
 
-    <!-- ARCHITECTURE -->
-    <div class="section" id="architecture">
-        <h2><span class="icon">&#127959;</span> How It Works</h2>
-        <p>SonarQube follows a client-server architecture. Developers run the <strong>SonarScanner</strong> in their CI/CD pipeline, which analyzes source code and sends results to the <strong>SonarQube Server</strong> for processing, storage, and visualization.</p>
+<!-- WHY -->
+<div class="section" id="why">
+<h2>3. Why Use SonarQube</h2>
+<ul>
+	<li>Without SonarQube, code quality checks depend on manual code reviews — slow and inconsistent.</li>
+	<li>Security vulnerabilities often slip through to production undetected.</li>
+	<li>Technical debt accumulates without visibility or tracking.</li>
+	<li>Compliance requirements (OWASP, CWE, SANS) are hard to enforce manually.</li>
+</ul>
+<h3>SonarQube solves these problems by</h3>
+<ul>
+	<li>Automating code quality analysis on every commit and pull request</li>
+	<li>Enforcing Quality Gates that block bad code from merging</li>
+	<li>Providing a <b>"Clean as You Code"</b> approach — focus on keeping new code clean</li>
+	<li>Mapping issues to industry standards (OWASP Top 10, CWE, SANS Top 25)</li>
+	<li>Tracking technical debt with time-to-fix estimates</li>
+</ul>
+</div>
 
-        <div class="arch-flow">
-            <div class="arch-step">
-                <div class="step-icon">&#128187;</div>
-                <h4>Source Code</h4>
-                <p>Developer pushes code to Git</p>
-            </div>
-            <div class="arch-arrow">&rarr;</div>
-            <div class="arch-step">
-                <div class="step-icon">&#9881;</div>
-                <h4>CI/CD Pipeline</h4>
-                <p>Jenkins, GitHub Actions, etc.</p>
-            </div>
-            <div class="arch-arrow">&rarr;</div>
-            <div class="arch-step">
-                <div class="step-icon">&#128269;</div>
-                <h4>SonarScanner</h4>
-                <p>Analyzes code with 5000+ rules</p>
-            </div>
-            <div class="arch-arrow">&rarr;</div>
-            <div class="arch-step">
-                <div class="step-icon">&#127961;</div>
-                <h4>SonarQube Server</h4>
-                <p>Processes &amp; stores results</p>
-            </div>
-            <div class="arch-arrow">&rarr;</div>
-            <div class="arch-step">
-                <div class="step-icon">&#9989;</div>
-                <h4>Quality Gate</h4>
-                <p>Pass/Fail decision</p>
-            </div>
-        </div>
+<!-- WORKFLOW -->
+<div class="section" id="workflow">
+<h2>4. How SonarQube Works</h2>
+<div class="mermaid">
+graph LR
+A[Developer Writes Code] --> B[Push to Git Repository]
+B --> C[CI/CD Pipeline Triggered]
+C --> D[SonarScanner Runs Analysis]
+D --> E[Results Sent to SonarQube Server]
+E --> F[Quality Gate Evaluated]
+F --> G{Pass or Fail?}
+G -->|Pass| H[Code Merged / Deployed]
+G -->|Fail| I[Developer Fixes Issues]
+I --> A
+</div>
+</div>
 
-        <p><strong>Components:</strong></p>
-        <ul>
-            <li><strong>SonarQube Server</strong> — Web server, search server (Elasticsearch), and compute engine</li>
-            <li><strong>Database</strong> — PostgreSQL (recommended), Oracle, or MS SQL Server for storing configuration and analysis results</li>
-            <li><strong>SonarScanner</strong> — Client-side tool that runs analysis and sends data to the server</li>
-            <li><strong>SonarLint</strong> — IDE plugin providing real-time feedback in VS Code, IntelliJ, Eclipse</li>
-        </ul>
-    </div>
+<!-- ANALYSIS STAGES -->
+<div class="section" id="stages">
+<h2>5. SonarQube Analysis Stages</h2>
+<ul>
+	<li><b>Code Scanning</b> <span class="tooltip">(The Inspector)<span class="tooltiptext">Like an inspector checking every room in a building for defects.</span></span></li>
+	<li><b>Bug Detection</b> <span class="tooltip">(Structural Check)<span class="tooltiptext">Finds cracks in the foundation — code that will break.</span></span></li>
+	<li><b>Vulnerability Detection</b> <span class="tooltip">(Security Audit)<span class="tooltiptext">Checks all locks and alarms — finds security weaknesses.</span></span></li>
+	<li><b>Code Smell Detection</b> <span class="tooltip">(Maintenance Review)<span class="tooltiptext">Identifies areas that need renovation — hard-to-maintain code.</span></span></li>
+	<li><b>Coverage Analysis</b> <span class="tooltip">(Test Coverage)<span class="tooltiptext">Measures how much of the building was inspected — % of code tested.</span></span></li>
+	<li><b>Duplication Detection</b> <span class="tooltip">(Redundancy Check)<span class="tooltiptext">Finds duplicate blueprints — copy-pasted code blocks.</span></span></li>
+	<li><b>Quality Gate Evaluation</b> <span class="tooltip">(Final Verdict)<span class="tooltiptext">The building either passes inspection or gets a stop-work order.</span></span></li>
+</ul>
+</div>
 
-    <!-- GETTING STARTED -->
-    <div class="section" id="getting-started">
-        <h2><span class="icon">&#128640;</span> Getting Started</h2>
-        <ol>
-            <li><strong>Run SonarQube with Docker</strong> — Fastest way to get a local instance running</li>
-            <li><strong>Create a project</strong> — Set up your first project in the SonarQube UI</li>
-            <li><strong>Run your first scan</strong> — Use SonarScanner to analyze your code</li>
-            <li><strong>Review results</strong> — Check the dashboard for issues and quality gate status</li>
-        </ol>
+<!-- STAGE DETAIL -->
+<div class="section" id="stage-detail">
+<h2>6. Detailed Stage-by-Stage Explanation</h2>
 
-        <h3 style="margin-top:1.5rem;">Quick Start with Docker</h3>
-        <pre><code># Pull and run SonarQube Community Edition
-docker run -d --name sonarqube \
-  -p 9000:9000 \
-  sonarqube:community
+<h3>Bug Detection</h3>
+<ul>
+	<li>Identifies code that is demonstrably wrong.</li>
+	<li>Examples: null pointer dereferences, resource leaks, infinite loops.</li>
+	<li>Severity levels: Blocker, Critical, Major, Minor, Info.</li>
+</ul>
+
+<h3>Vulnerability Detection</h3>
+<ul>
+	<li>Finds security weaknesses mapped to <b>OWASP Top 10</b> and <b>CWE</b>.</li>
+	<li>Examples: SQL injection, XSS, hardcoded credentials, insecure deserialization.</li>
+	<li>Includes <b>Security Hotspots</b> — security-sensitive code needing manual review.</li>
+</ul>
+
+<h3>Code Smell Detection</h3>
+<ul>
+	<li>Identifies maintainability issues that increase technical debt.</li>
+	<li>Examples: overly complex methods, duplicated code, long parameter lists.</li>
+	<li>Provides <b>time-to-fix estimates</b> for planning remediation.</li>
+</ul>
+
+<h3>Quality Gate Evaluation</h3>
+<ul>
+	<li>Applies pass/fail criteria based on configurable thresholds.</li>
+	<li>Default conditions: No new bugs, no new vulnerabilities, 80%+ coverage on new code.</li>
+	<li>Results are posted back to the pull request as status checks.</li>
+</ul>
+</div>
+
+<!-- ARCHITECTURE -->
+<div class="section" id="architecture">
+<h2>7. SonarQube Architecture</h2>
+<div class="mermaid">
+graph TD
+Developer --> IDE[IDE + SonarLint]
+Developer --> Git[Git Repository]
+Git --> CI[CI/CD Pipeline]
+CI --> Scanner[SonarScanner]
+Scanner --> Server[SonarQube Server]
+Server --> WebServer[Web Server]
+Server --> CE[Compute Engine]
+Server --> ES[Elasticsearch]
+Server --> DB[(PostgreSQL Database)]
+Server --> QG{Quality Gate}
+QG -->|Pass| Deploy[Deploy to Production]
+QG -->|Fail| Notify[Notify Developer]
+</div>
+
+<h3>Components</h3>
+<ul>
+	<li><b>SonarQube Server</b> — Web server, compute engine, and search server (Elasticsearch)</li>
+	<li><b>Database</b> — PostgreSQL (recommended), Oracle, or MS SQL Server</li>
+	<li><b>SonarScanner</b> — Client-side tool that runs analysis and sends data to the server</li>
+	<li><b>SonarLint</b> — IDE plugin for real-time feedback in VS Code, IntelliJ, Eclipse</li>
+	<li><b>Quality Gate</b> — Configurable pass/fail conditions applied to every analysis</li>
+</ul>
+</div>
+
+<!-- TOOLS -->
+<div class="section" id="tools">
+<h2>8. Tools That Integrate with SonarQube</h2>
+<table>
+	<tr>
+		<th>Tool</th>
+		<th>Purpose</th>
+		<th>Documentation</th>
+	</tr>
+	<tr>
+		<td><img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub" style="height:24px;vertical-align:middle;"> GitHub Actions</td>
+		<td>Runs SonarQube analysis in CI/CD workflows</td>
+		<td><a href="https://docs.github.com/actions" target="_blank">Docs</a></td>
+	</tr>
+	<tr>
+		<td><img src="https://avatars.githubusercontent.com/u/107424" alt="Jenkins" style="height:24px;vertical-align:middle;"> Jenkins</td>
+		<td>CI/CD server with SonarQube Scanner plugin</td>
+		<td><a href="https://www.jenkins.io/doc/" target="_blank">Docs</a></td>
+	</tr>
+	<tr>
+		<td><img src="https://avatars.githubusercontent.com/u/12959162" alt="Snyk" style="height:24px;vertical-align:middle;"> Snyk</td>
+		<td>Complements SonarQube with dependency vulnerability scanning</td>
+		<td><a href="https://docs.snyk.io" target="_blank">Docs</a></td>
+	</tr>
+	<tr>
+		<td><img src="https://avatars.githubusercontent.com/u/5429470" alt="Docker" style="height:24px;vertical-align:middle;"> Docker</td>
+		<td>Run SonarQube as a container for easy setup</td>
+		<td><a href="https://docs.docker.com" target="_blank">Docs</a></td>
+	</tr>
+	<tr>
+		<td><img src="https://avatars.githubusercontent.com/u/15859888" alt="Helm" style="height:24px;vertical-align:middle;"> Helm</td>
+		<td>Deploy SonarQube to Kubernetes with official Helm chart</td>
+		<td><a href="https://helm.sh/docs" target="_blank">Docs</a></td>
+	</tr>
+	<tr>
+		<td><img src="https://avatars.githubusercontent.com/u/13629408" alt="Kubernetes" style="height:24px;vertical-align:middle;"> Kubernetes</td>
+		<td>Orchestrate SonarQube in production clusters</td>
+		<td><a href="https://kubernetes.io/docs/" target="_blank">Docs</a></td>
+	</tr>
+	<tr>
+		<td><img src="https://avatars.githubusercontent.com/u/545988" alt="SonarLint" style="height:24px;vertical-align:middle;"> SonarLint</td>
+		<td>Real-time IDE analysis synced with SonarQube rules</td>
+		<td><a href="https://www.sonarsource.com/products/sonarlint/" target="_blank">Docs</a></td>
+	</tr>
+	<tr>
+		<td><img src="https://avatars.githubusercontent.com/u/545988" alt="SonarCloud" style="height:24px;vertical-align:middle;"> SonarCloud</td>
+		<td>Cloud-hosted SonarQube — free for open source</td>
+		<td><a href="https://docs.sonarsource.com/sonarcloud/" target="_blank">Docs</a></td>
+	</tr>
+</table>
+</div>
+
+<!-- GETTING STARTED -->
+<div class="section" id="getting-started">
+<h2>9. Getting Started with SonarQube</h2>
+<ul>
+	<li>Run SonarQube locally using Docker.</li>
+	<li>Create a project in the SonarQube dashboard.</li>
+	<li>Generate an authentication token.</li>
+	<li>Install SonarScanner on your machine.</li>
+	<li>Run your first analysis.</li>
+	<li>Review results in the dashboard.</li>
+</ul>
+
+<h3>Quick Start with Docker</h3>
+<pre><code># Pull and run SonarQube Community Edition
+docker run -d --name sonarqube -p 9000:9000 sonarqube:community
 
 # Access the dashboard at http://localhost:9000
 # Default credentials: admin / admin
@@ -466,160 +391,80 @@ sonar-scanner \
   -Dsonar.sources=. \
   -Dsonar.host.url=http://localhost:9000 \
   -Dsonar.token=YOUR_TOKEN</code></pre>
-    </div>
 
-    <!-- ECOSYSTEM / RELATED TOOLS -->
-    <div class="section" id="ecosystem">
-        <h2><span class="icon">&#128279;</span> Related Tools &amp; Ecosystem</h2>
-        <table>
-            <tr>
-                <th>Tool</th>
-                <th>Purpose</th>
-                <th>Documentation</th>
-            </tr>
-            <tr>
-                <td><img src="https://avatars.githubusercontent.com/u/545988" alt="SonarLint"> SonarLint</td>
-                <td>Real-time code analysis IDE plugin (VS Code, IntelliJ, Eclipse)</td>
-                <td><a href="https://www.sonarsource.com/products/sonarlint/" target="_blank">Docs &rarr;</a></td>
-            </tr>
-            <tr>
-                <td><img src="https://avatars.githubusercontent.com/u/545988" alt="SonarCloud"> SonarCloud</td>
-                <td>Cloud-hosted SonarQube — free for open-source projects</td>
-                <td><a href="https://docs.sonarsource.com/sonarcloud/" target="_blank">Docs &rarr;</a></td>
-            </tr>
-            <tr>
-                <td><img src="https://avatars.githubusercontent.com/u/44036562" alt="GitHub Actions"> GitHub Actions</td>
-                <td>CI/CD workflow automation with native SonarQube integration</td>
-                <td><a href="https://docs.github.com/actions" target="_blank">Docs &rarr;</a></td>
-            </tr>
-            <tr>
-                <td><img src="https://avatars.githubusercontent.com/u/107424" alt="Jenkins"> Jenkins</td>
-                <td>CI/CD server with SonarQube Scanner plugin</td>
-                <td><a href="https://www.jenkins.io/doc/" target="_blank">Docs &rarr;</a></td>
-            </tr>
-            <tr>
-                <td><img src="https://avatars.githubusercontent.com/u/12959162" alt="Snyk"> Snyk</td>
-                <td>Dependency vulnerability scanning (complements SonarQube)</td>
-                <td><a href="https://docs.snyk.io" target="_blank">Docs &rarr;</a></td>
-            </tr>
-            <tr>
-                <td><img src="https://avatars.githubusercontent.com/u/5429470" alt="Docker"> Docker</td>
-                <td>Containerized SonarQube deployment</td>
-                <td><a href="https://docs.docker.com" target="_blank">Docs &rarr;</a></td>
-            </tr>
-            <tr>
-                <td><img src="https://avatars.githubusercontent.com/u/13629408" alt="Kubernetes"> Kubernetes</td>
-                <td>Orchestrate SonarQube in production with Helm charts</td>
-                <td><a href="https://kubernetes.io/docs/" target="_blank">Docs &rarr;</a></td>
-            </tr>
-            <tr>
-                <td><img src="https://avatars.githubusercontent.com/u/15859888" alt="Helm"> Helm</td>
-                <td>Official SonarQube Helm chart for Kubernetes deployments</td>
-                <td><a href="https://helm.sh/docs" target="_blank">Docs &rarr;</a></td>
-            </tr>
-        </table>
-    </div>
+<h3>GitHub Actions Integration</h3>
+<pre><code># .github/workflows/sonarqube.yml
+name: SonarQube Analysis
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+jobs:
+  sonarqube:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: SonarSource/sonarqube-scan-action@v3
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}</code></pre>
+</div>
 
-    <!-- STUDY RESOURCES -->
-    <div class="section" id="resources">
-        <h2><span class="icon">&#128218;</span> Study Resources</h2>
-        <div class="resource-grid">
-            <a href="https://docs.sonarsource.com/sonarqube/latest/" target="_blank" class="resource-item">
-                <div class="r-icon">&#128216;</div>
-                <div class="r-text">
-                    <h4>Official Documentation</h4>
-                    <p>Complete SonarQube docs from SonarSource</p>
-                </div>
-            </a>
-            <a href="https://docs.sonarsource.com/sonarqube/latest/try-out-sonarqube/" target="_blank" class="resource-item">
-                <div class="r-icon">&#127891;</div>
-                <div class="r-text">
-                    <h4>Getting Started Guide</h4>
-                    <p>Official quickstart — try SonarQube in minutes</p>
-                </div>
-            </a>
-            <a href="https://community.sonarsource.com/" target="_blank" class="resource-item">
-                <div class="r-icon">&#128172;</div>
-                <div class="r-text">
-                    <h4>SonarSource Community</h4>
-                    <p>Official forum — ask questions, share knowledge</p>
-                </div>
-            </a>
-            <a href="https://www.youtube.com/@SonarSource" target="_blank" class="resource-item">
-                <div class="r-icon">&#127909;</div>
-                <div class="r-text">
-                    <h4>SonarSource YouTube</h4>
-                    <p>Official video tutorials and product demos</p>
-                </div>
-            </a>
-            <a href="https://www.youtube.com/results?search_query=sonarqube+tutorial" target="_blank" class="resource-item">
-                <div class="r-icon">&#127916;</div>
-                <div class="r-text">
-                    <h4>YouTube Tutorials</h4>
-                    <p>Community tutorials — setup, CI/CD integration, best practices</p>
-                </div>
-            </a>
-            <a href="https://www.reddit.com/r/devops/" target="_blank" class="resource-item">
-                <div class="r-icon">&#128488;</div>
-                <div class="r-text">
-                    <h4>Reddit r/devops</h4>
-                    <p>DevOps community — SonarQube discussions and tips</p>
-                </div>
-            </a>
-            <a href="https://hub.docker.com/_/sonarqube" target="_blank" class="resource-item">
-                <div class="r-icon">&#128230;</div>
-                <div class="r-text">
-                    <h4>Docker Hub — SonarQube</h4>
-                    <p>Official Docker images and deployment guide</p>
-                </div>
-            </a>
-            <a href="https://github.com/SonarSource/sonarqube" target="_blank" class="resource-item">
-                <div class="r-icon">&#128187;</div>
-                <div class="r-text">
-                    <h4>GitHub Repository</h4>
-                    <p>SonarQube source code — contribute and explore</p>
-                </div>
-            </a>
-            <a href="https://www.sonarsource.com/learn/" target="_blank" class="resource-item">
-                <div class="r-icon">&#127942;</div>
-                <div class="r-text">
-                    <h4>SonarSource Learning</h4>
-                    <p>Free courses on Clean Code and code quality practices</p>
-                </div>
-            </a>
-        </div>
-    </div>
+<!-- EDITIONS -->
+<div class="section" id="editions">
+<h2>10. SonarQube Editions</h2>
+<table>
+	<tr>
+		<th>Edition</th>
+		<th>Key Features</th>
+		<th>Best For</th>
+	</tr>
+	<tr>
+		<td><b>Community</b> (Free)</td>
+		<td>15+ languages, Quality Gates, CI/CD integration, Clean as You Code</td>
+		<td>Open source projects, small teams</td>
+	</tr>
+	<tr>
+		<td><b>Developer</b></td>
+		<td>Branch analysis, PR decoration, 25+ languages</td>
+		<td>Development teams with branching workflows</td>
+	</tr>
+	<tr>
+		<td><b>Enterprise</b></td>
+		<td>Portfolio management, OWASP/CWE reports, 30+ languages</td>
+		<td>Large organizations with compliance needs</td>
+	</tr>
+	<tr>
+		<td><b>Data Center</b></td>
+		<td>High availability, horizontal scalability</td>
+		<td>Mission-critical deployments at scale</td>
+	</tr>
+</table>
+</div>
 
-    <!-- FOOTER -->
-    <footer>
-        <p>Generated by <strong>AutoWiki AI</strong> &middot; March 11, 2026</p>
-        <p>Built with &#10084; for the DevOps community</p>
-    </footer>
+<!-- RESOURCES -->
+<div class="section" id="resources">
+<h2>11. Study Resources</h2>
+<ul>
+	<li><a href="https://docs.sonarsource.com/sonarqube/latest/" target="_blank">Official SonarQube Documentation</a> — Complete reference from SonarSource</li>
+	<li><a href="https://docs.sonarsource.com/sonarqube/latest/try-out-sonarqube/" target="_blank">Try Out SonarQube</a> — Official quickstart guide</li>
+	<li><a href="https://www.sonarsource.com/learn/" target="_blank">SonarSource Learning</a> — Free courses on Clean Code</li>
+	<li><a href="https://community.sonarsource.com/" target="_blank">SonarSource Community Forum</a> — Ask questions, share knowledge</li>
+	<li><a href="https://www.youtube.com/@SonarSource" target="_blank">SonarSource YouTube Channel</a> — Official video tutorials and demos</li>
+	<li><a href="https://github.com/SonarSource/sonarqube" target="_blank">SonarQube GitHub Repository</a> — Source code, contribute, explore</li>
+	<li><a href="https://hub.docker.com/_/sonarqube" target="_blank">SonarQube on Docker Hub</a> — Official Docker images</li>
+	<li><a href="https://www.reddit.com/r/devops/" target="_blank">Reddit r/devops</a> — DevOps community discussions</li>
+	<li><a href="https://www.youtube.com/results?search_query=sonarqube+tutorial+2025" target="_blank">YouTube SonarQube Tutorials</a> — Community video guides and walkthroughs</li>
+	<li><a href="https://blog.sonarsource.com/" target="_blank">SonarSource Blog</a> — Latest news, tips, and best practices</li>
+</ul>
+</div>
 
-</main>
+</div>
+</div>
 
-<script>
-    // Active nav highlighting on scroll
-    const sections = document.querySelectorAll('.section');
-    const navLinks = document.querySelectorAll('.sidebar nav a');
-    window.addEventListener('scroll', function() {
-        var current = '';
-        sections.forEach(function(section) {
-            var top = section.offsetTop - 100;
-            if (window.scrollY >= top) current = section.getAttribute('id');
-        });
-        navLinks.forEach(function(link) {
-            link.classList.remove('active');
-            if (link.getAttribute('href') === '#' + current) link.classList.add('active');
-        });
-    });
-    // Close mobile sidebar on link click
-    navLinks.forEach(function(link) {
-        link.addEventListener('click', function() {
-            document.querySelector('.sidebar').classList.remove('open');
-        });
-    });
-</script>
-
+<script>mermaid.initialize({startOnLoad:true, theme:'default'});</script>
 </body>
 </html>
